@@ -25,9 +25,10 @@
     <style>
       :root {
         --bs-font-sans-serif: "DM Sans", sans-serif;
+        --bs-gray: #6c757d;
       }
 
-      @media (min-width: 576px) {
+      /*@media (min-width: 576px) {
         .card {
           border: 3px solid rgb(255,218,185);
           border-radius: 10px;
@@ -38,18 +39,18 @@
           height: 15vw;
           object-fit: cover;
         }
-      }
+      }*/
     </style>
 
-    <title>CeAffairs</title>
+    <title>AgroCelo</title>
   </head>
 
   <body>
 
    <!-- Navbar starts here -->
-  <nav class="navbar bg-dark navbar-dark">
+  <nav class="navbar bg-success " >
         <div class="container">
-          <span class="navbar-brand m-0 h4 fw-bold">ceAffairs</span>
+          <span class="navbar-brand m-0 h4 fw-bold text-white">AgroCelo</span>
           <span class="nav-link border rounded-pill bg-light">
             <span id="balance">0</span>
             cUSD
@@ -61,33 +62,59 @@
 
 
  <!-- Hero starts here -->
-    <div style="text-align: center; background-color: light-grey;" class="shadow p-5"> 
-      <p>Welcome to ceAffairs a blockchain event hosting site where you host an event and also join be a guest to other people event on the celo blockchain</p>
-
-      <button class="btn btn-success rounded-pill" data-bs-toggle="modal"
-          data-bs-target="#addModal">Post an Event</button>
+ <div class="row bg-success text-white">
+    <div class="col-md-6 p-5">
+      <h4>AgroCelo</h4>
+      <p>
+        AgroCelo is a celo blockchain agro project which enables farmers to
+        buy and sell the plant seed
+        <p>
+      <button class="btn btn-primary" data-bs-toggle="modal"
+          data-bs-target="#addModal">Post Seed</button>
     </div>
+
+<div class="col-md-6">
+    <img style="height : 300px; width : 100%;"
+    src="https://www.gardeningknowhow.com/wp-content/uploads/2020/07/seed-planting.jpg" />
+  </div>
+</div>
  <!--Hero ends here -->
-
-
- <!-- Start of container holding list of events -->
-    <div class="container mt-3">
+<div class="container mt-3">
       <div class="alert alert-warning sticky-top mt-2" role="alert">
         <span id="notification">⌛ Loading...</span>
       </div>
-  
-      
-      
-      <h5 class="my-5 text-center" id="eventPage">Event Lists</h5>
-      
+</div>
+
+
+<br />
+<div class="row">
+  <div class="col-md-4"></div>
+
+  <div class="col-md-4">
+ <nav class="nav nav-pills" id="tabs">
+  <a class="nav-link active showProducts" aria-current="page" href="#">Products</a>
+  <a class="nav-link showpurchased" href="#">Purchased Products</a>
+</nav>
+</div>
+
+<div class="col-md-4"></div>
+</div>
+<br />
+
+
+ <!-- Start of container holding list of events -->
         <main id="marketplace" class="row">
           <p class="text-center mt-5">loading please wait...</p>
         </main>
-     
-    
+
+        <main id="purchasedProduct" class="row d-none">
+          <p class="text-center mt-5">loading please wait...</p>
+        </main>
+
+
       </div>
 <!-- End of container holding list of events -->
-    
+
 
 <!-- start of modal that view an event -->
 <div
@@ -144,58 +171,50 @@
                 <div class="col">
                   <input
                     type="text"
-                    id="eventName"
+                    id="seedName"
                     class="form-control mb-2"
-                    placeholder="Enter event name"
+                    placeholder="seed name"
                   />
                 </div>
 
                 <div class="col">
                   <input
                     type="text"
-                    id="eventCardImgUrl"
+                    id="seedImgUrl"
                     class="form-control mb-2"
-                    placeholder="Enter event card image url"
+                    placeholder="seed image url"
                   />
                 </div>
 
                 <div class="col">
                   <input
                     type="textarea"
-                    id="eventDetails"
+                    id="seedDetails"
                     class="form-control mb-2"
-                    placeholder="Enter event details"
-                  />
-                </div>
-
-                <div class="col">
-                  <input
-                    type="date"
-                    id="eventDate"
-                    class="form-control mb-2"
-                    placeholder="Enter event date"
+                    placeholder="seed details"
                   />
                 </div>
 
 
+
                 <div class="col">
                   <input
-                    type="time"
-                    id="eventTime"
+                    type="text"
+                    id="seedLocation"
                     class="form-control mb-2"
-                    placeholder="Enter event time"
+                    placeholder="seed location"
                   />
                 </div>
 
                 <div class="col">
                   <input
                     type="text"
-                    id="eventLocation"
+                    id="newPrice"
                     class="form-control mb-2"
-                    placeholder="Enter event location"
+                    placeholder="Enter price"
                   />
                 </div>
-                
+
               </div>
             </form>
           </div>
