@@ -282,7 +282,7 @@ document.querySelector("#addModal1").addEventListener("click", async (e) => {
       } catch (error) {
         notification(`⚠️ ${error}.`)
       }
-      
+
       notification(`⌛ Awaiting payment for "${listedSeeds[index].seedName}"...`)
       try {
         const result = await contract.methods
@@ -321,8 +321,11 @@ console.log(resultx)
                 <div class="card-body row">
                 <div class="col-md-4">
                 <img
-                src="${item[2]}"
-                alt="image pic" style={{width: "100%", objectFit: "cover"}} />
+                src="${item[2]}" alt="image pic" style="width: 100%; objectFit: cover; height :100%;" />
+
+                <div class="translate-middle-y position-absolute bottom-0 start-2" >
+                ${identiconTemplate(item[0])}
+                </div>
                     </div>
 
                     <div class="col-md-8">
@@ -338,7 +341,12 @@ console.log(resultx)
 
                     <p class="card-text mt-2 d-flex justify-content-between" style="font-size : 12px;">
                       <span style="display : block;" class="text-uppercase fw-bold">Price: </span>
-                      <span >${item[1]}</span>
+                      <span >${item[4]}</span>
+                    </p>
+
+                    <p class="card-text mt-2 d-flex justify-content-between" style="font-size : 12px;">
+                      <span style="display : block;" class="text-uppercase fw-bold">Date Purchased: </span>
+                      <span >${item[4]}</span>
                     </p>
                       </div>
                     </div>
