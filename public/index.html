@@ -36,6 +36,12 @@
   </head>
 
   <body>
+    <div class="container">
+          <div class="alert alert-warning fixed-top" role="alert">
+            <span id="notification">⌛ Loading please wait...</span>
+          </div>
+    </div>
+
 
    <!-- Navbar starts here -->
   <nav class="navbar bg-success " >
@@ -54,13 +60,13 @@
  <!-- Hero starts here -->
  <div class="row bg-success text-white">
     <div class="col-md-6 p-5">
-      <h4>AgroCelo</h4>
+      <h4>#1 Seed Marketplace</h4>
       <p>
         AgroCelo is a celo blockchain agro project which enables farmers to
-        buy and sell the plant seed
+        buy and sell the plant seed on the celo blockchain.
         <p>
-      <button class="btn btn-primary" data-bs-toggle="modal"
-          data-bs-target="#addModal">Post Seed</button>
+      <button class="btn btn-success shadow" data-bs-toggle="modal"
+          data-bs-target="#addModal">List Seed</button>
     </div>
 
 <div class="col-md-6">
@@ -69,21 +75,17 @@
   </div>
 </div>
  <!--Hero ends here -->
-<div class="container mt-3">
-      <div class="alert alert-warning sticky-top mt-2" role="alert">
-        <span id="notification">⌛ Loading...</span>
-      </div>
-</div>
 
 
 <br />
-<div class="row">
+<div class="row my-4">
   <div class="col-md-4"></div>
 
   <div class="col-md-4">
  <nav class="nav nav-pills" id="tabs">
-  <a class="nav-link active bg-success  showProducts" id="productTab" aria-current="page">Products</a>
-  <a class="nav-link showpurchased" id="purchasedTab" >Purchased Products</a>
+  <a class="nav-link active bg-success  showProducts"
+  id="productTab" aria-current="page" style="cursor : pointer;">Products</a>
+  <a class="nav-link showpurchased" id="purchasedTab" style="cursor : pointer;">Purchased Products</a>
 </nav>
 </div>
 
@@ -128,7 +130,7 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="newProductModalLabel">Event Details </h5>
+            <h5 class="modal-title" id="newProductModalLabel">Details </h5>
 
             <button
               type="button"
@@ -211,7 +213,17 @@
                     type="text"
                     id="newPrice"
                     class="form-control mb-2"
-                    placeholder="Enter price"
+                    placeholder="price"
+                  />
+                </div>
+
+
+                <div class="col">
+                  <input
+                    type="email"
+                    id="email"
+                    class="form-control mb-2"
+                    placeholder="email address"
                   />
                 </div>
 
@@ -228,11 +240,11 @@
             </button>
             <button
               type="button"
-              class="btn btn-dark"
+              class="btn btn-success"
               data-bs-dismiss="modal"
               id="postEventBtn"
             >
-              Add Event
+              List Seed
             </button>
           </div>
         </div>

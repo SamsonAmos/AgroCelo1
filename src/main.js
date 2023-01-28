@@ -5,7 +5,7 @@ import marketplaceAbi from "../contract/marketplace.abi.json"
 import erc20Abi from "../contract/erc20.abi.json"
 
 const ERC20_DECIMALS = 18
-const MPContractAddress = "0xe961b5A406C3Db9920aA369eaf4e17BDd79053c8"
+const MPContractAddress = "0x3ea2b3DE068E9849e77671F49054BE214933f66F"
 const cUSDContractAddress = "0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1" //Erc20 contract address
 
 let kit //contractkit
@@ -80,7 +80,8 @@ const getListedSeeds = async function() {
         seedImgUrl: p[2],
         seedDetails: p[3],
         seedLocation: p[4],
-        price: new BigNumber(p[5])
+        price: new BigNumber(p[5]),
+        email : p[6]
       })
     })
 
@@ -185,7 +186,8 @@ document
       document.getElementById("seedLocation").value,
       new BigNumber(document.getElementById("newPrice").value)
       .shiftedBy(ERC20_DECIMALS)
-      .toString()
+      .toString(),
+      document.getElementById("email").value
     ]
     notification(`⌛ Posting your event to the blockchain please wait...`)
     try {
@@ -206,19 +208,17 @@ document
 document.querySelector("#marketplace").addEventListener("click", async (e) => {
     if(e.target.className.includes("view")){
       const _id = e.target.id;
-      let eventData;
-      let attendees = [];
+      let listedSeed;
 
       // function to get list of attendess on the smart contract.
       try {
-          eventData = await contract.methods.getListedSeedById(_id).call();
-          // attendees = await contract.methods.getAttendees(_id).call();
+          listedSeed = await contract.methods.getListedSeedById(_id).call();
           let myModal = new bootstrap.Modal(document.getElementById('addModal1'), {backdrop: 'static', keyboard: false});
           myModal.show();
 
 
 // stores the timestamp of the event date.
-var eventTimeStamp= parseInt(eventData[4])
+var eventTimeStamp= parseInt(listedSeed[4])
 
 // converts timestamp to milliseconds.
 var convertToMilliseconds = eventTimeStamp * 1000;
@@ -231,29 +231,31 @@ var dateFormat= new Date(convertToMilliseconds);
 document.getElementById("modalHeader").innerHTML = `
 <div class="card">
   <img class="card-img-top"
-  src="${eventData[2]}"
+  src="${listedSeed[2]}"
   alt="image pic" style={{width: "100%", objectFit: "cover"}} />
   <div class="card-body">
-    <p class="card-title fs-6 fw-bold mt-2 text-uppercase">${eventData[1]}</p>
+    <p class="card-title fs-6 fw-bold mt-2 text-uppercase">${listedSeed[1]}</p>
     <p  style="font-size : 12px;">
       <span style="display : block;" class="text-uppercase fw-bold">Seed Description: </span>
-      <span class="">${eventData[3]}</span>
+      <span class="">${listedSeed[3]}</span>
     </p>
 
-        <p  style="font-size : 12px;">
-          <span style="display : block;" class="text-uppercase fw-bold">Soil Compactiblity: </span>
-          <span class="">${eventData[4]}</span>
+
+        <p class="card-text mt-2" style="font-size : 12px;">
+          <span style="display : block;" class="text-uppercase fw-bold">Location: </span>
+          <span >${listedSeed[4]}</span>
         </p>
 
         <p class="card-text mt-2" style="font-size : 12px;">
-          <span style="display : block;" class="text-uppercase fw-bold">location: </span>
-          <span >${eventData[4]}</span>
+          <span style="display : block;" class="text-uppercase fw-bold">Email: </span>
+          <span >${listedSeed[6]}</span>
         </p>
+
         <div class="d-grid gap-2">
           <a class="btn btn-lg text-white bg-success buyBtn fs-6 p-3"
           id=${_id}
           >
-            Buy for ${new BigNumber(eventData[5]).shiftedBy(-ERC20_DECIMALS).toFixed(2)} cUSD
+            Buy for ${new BigNumber(listedSeed[5]).shiftedBy(-ERC20_DECIMALS).toFixed(2)} cUSD
           </a>
         </div>
   </div>
@@ -275,6 +277,7 @@ document.querySelector("#addModal1").addEventListener("click", async (e) => {
       var _price =  new BigNumber(listedSeeds[index].price)
       var _seedName = listedSeeds[index].seedName
       var _seedImgUrl = listedSeeds[index].seedImgUrl
+      var _email = listedSeeds[index].email
 
       notification("⌛ Waiting for payment approval...")
       try {
@@ -286,7 +289,7 @@ document.querySelector("#addModal1").addEventListener("click", async (e) => {
       notification(`⌛ Awaiting payment for "${listedSeeds[index].seedName}"...`)
       try {
         const result = await contract.methods
-          .buySeed(index, _seedName, _seedImgUrl, _price)
+          .buySeed(index, _seedName, _seedImgUrl, _price, _email)
           .send({ from: kit.defaultAccount })
         notification(`🎉 You successfully bought "${listedSeeds[index].seedName}".`)
         getListedSeeds()
@@ -294,6 +297,8 @@ document.querySelector("#addModal1").addEventListener("click", async (e) => {
       } catch (error) {
         notification(`⚠️ ${error}.`)
       }
+
+      notificationOff()
     }
 
   })
@@ -306,18 +311,17 @@ document.querySelector("#addModal1").addEventListener("click", async (e) => {
         document.getElementById("productTab").classList.remove("active", "bg-success");
         document.getElementById("purchasedTab").classList.add("active", "bg-success");
 
-        var resultx;
+        var result;
 
-        notification(`⌛ Processing your request please wait ...`)
+        notification(`⌛ Loading please wait ...`)
 
         try {
-           resultx = await contract.methods.getPurchasedSeeds().call();
-          notification(`🎉 You are now one of the attendee .`)
-console.log(resultx)
+           result = await contract.methods.getPurchasedSeeds().call();
 
-          if (resultx.length) {
+notificationOff()
+          if (result.length) {
             document.getElementById(`purchasedProduct`).innerHTML = ``
-        resultx.forEach((item) => {
+        result.forEach((item) => {
           var timestamp= parseInt(item[3])
 
 // converts timestamp to milliseconds.
@@ -334,11 +338,11 @@ var date = new Date(convertToMilliseconds);
                 <div class="card-body row">
                 <div class="col-md-4">
                 <img
-                src="${item[2]}" alt="image pic" style="width: 100%; objectFit: cover; height :100%;" />
+                src="${item[2]}" alt="image pic" style="width: 100%; objectFit: cover; height :70%;" />
 
-                <div class="translate-middle-y position-absolute bottom-0 start-2" >
+                <!-- <div class="translate-middle-y position-absolute bottom-25 start-2" >
                 ${identiconTemplate(item[0])}
-                </div>
+                </div> -->
                     </div>
 
                     <div class="col-md-8">
@@ -347,10 +351,6 @@ var date = new Date(convertToMilliseconds);
                       <span >${item[1]}</span>
                     </p>
 
-                    <p class="card-text mt-2 d-flex justify-content-between" style="font-size : 12px;">
-                      <span style="display : block;" class="text-uppercase fw-bold">Soil Compactiblity: </span>
-                      <span >${item[1]}</span>
-                    </p>
 
                     <p class="card-text mt-2 d-flex justify-content-between" style="font-size : 12px;">
                       <span style="display : block;" class="text-uppercase fw-bold">Price: </span>
@@ -360,6 +360,13 @@ var date = new Date(convertToMilliseconds);
                     <p class="card-text mt-2 d-flex justify-content-between" style="font-size : 12px;">
                       <span style="display : block;" class="text-uppercase fw-bold">Date Purchased: </span>
                       <span >${date.getHours() + ":" + date.getMinutes() + ", "+ date.toDateString()}</span>
+                    </p>
+
+                    <p class="card-text mt-2 d-flex justify-content-between"
+                    style="font-size : 12px;">
+                      <span style="display : block;"
+                      class="text-uppercase fw-bold">Email: </span>
+                      <span >${item[5]}</span>
                     </p>
                       </div>
                     </div>
@@ -374,10 +381,9 @@ var date = new Date(convertToMilliseconds);
         } catch (error) {
           notification(`⚠️ ${error}.`)
         }
-        // notificationOff()
-        // console.log(resultx[0][1])
+        notificationOff()
         getListedSeeds()
-        // document.getElementById("marketplace").innerHTML += `<p>Hello</p>`
+
       }
 
       else if (e.target.className.includes("showProducts")) {

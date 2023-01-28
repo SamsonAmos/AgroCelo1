@@ -27,6 +27,7 @@ contract AgroCelo{
         string seedDetails;
         string  seedLocation;
         uint price;
+        string email;
     }
 
     struct PurchasedSeedInfo {
@@ -35,6 +36,7 @@ contract AgroCelo{
         string seedImgUrl;
         uint256 timeStamp;
         uint price;
+        string email;
     }
 
     //map used to store listed seeds.
@@ -46,14 +48,15 @@ contract AgroCelo{
 
     // Function used to list a seed.
     function listSeed(string memory _seedName, string memory _seedImgUrl,
-    string memory _seedDetails, string memory  _seedLocation, uint _price) public {
+    string memory _seedDetails, string memory  _seedLocation, uint _price, string memory _email) public {
         listedSeeds[listedSeedLength] = SeedInformation({
         owner : payable(msg.sender),
         seedName: _seedName,
         seedImgUrl: _seedImgUrl,
         seedDetails : _seedDetails,
         seedLocation: _seedLocation,
-        price : _price
+        price : _price,
+        email : _email
       });
      listedSeedLength++;
 }
@@ -66,7 +69,8 @@ contract AgroCelo{
         string memory,
         string memory,
         string memory,
-        uint price
+        uint price,
+        string memory
 
     ) {
 
@@ -76,13 +80,14 @@ contract AgroCelo{
             listedSeeds[_index].seedImgUrl,
             listedSeeds[_index].seedDetails,
             listedSeeds[_index].seedLocation,
-            listedSeeds[_index].price
+            listedSeeds[_index].price,
+            listedSeeds[_index].email
         );
     }
 
 
 // function used to purchase a seed.
-function buySeed(uint _index, string memory _seedName, string memory _seedImgUrl,  uint _price) public payable  {
+function buySeed(uint _index, string memory _seedName, string memory _seedImgUrl,  uint _price, string memory _email) public payable  {
         require(listedSeeds[_index].owner != msg.sender, "you are already an owner of this seed");
         require(
           IERC20Token(cUsdTokenAddress).transferFrom(
@@ -92,7 +97,7 @@ function buySeed(uint _index, string memory _seedName, string memory _seedImgUrl
           ),
           "Transfer failed."
         );
-        storePurchasedSeeds(msg.sender, _seedName, _seedImgUrl, _price);
+        storePurchasedSeeds(msg.sender, _seedName, _seedImgUrl, _price, _email);
     }
 
 // function used to fetch seeds purchased already.
@@ -103,9 +108,9 @@ function getPurchasedSeeds() public view returns (PurchasedSeedInfo[] memory) {
 
 // function used to store purchase seed by a particular owner.
 function storePurchasedSeeds(address _owner,
- string memory _seedName, string memory _seedImgUrl, uint _price) public {
+ string memory _seedName, string memory _seedImgUrl, uint _price, string memory _email) public {
     purchasedSeeds[msg.sender].push(PurchasedSeedInfo({purchasedFrom : _owner,
-    seedName : _seedName, price : _price, seedImgUrl : _seedImgUrl, timeStamp : block.timestamp }));
+    seedName : _seedName, price : _price, email : _email, seedImgUrl : _seedImgUrl, timeStamp : block.timestamp }));
 }
 
 
