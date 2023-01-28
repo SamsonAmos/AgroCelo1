@@ -113,7 +113,7 @@ function renderProductTemplate() {
 function productTemplate(seed) {
   return `
  <div class="card mb-4">
-      <img class="card-img-top" src="${seed.seedImgUrl}" alt="...">
+      <img class="card-img-top" src="${seed.seedImgUrl}" alt="..." style="height : 150px;">
   <div class="card-body text-left p-3 position-relative">
         <div class="translate-middle-y position-absolute top-0 end-0"  id="${seed.index}">
         ${identiconTemplate(seed.owner)}
@@ -176,7 +176,7 @@ window.addEventListener("load", async () => {
 
 // function used to list a seed on the blockchain.
 document
-  .querySelector("#postEventBtn")
+  .querySelector("#listSeedBtn")
   .addEventListener("click", async (e) => {
 
     const params = [
@@ -189,7 +189,7 @@ document
       .toString(),
       document.getElementById("email").value
     ]
-    notification(`⌛ Posting your event to the blockchain please wait...`)
+    notification(`⌛ Listing your seed on the celo blockchain...`)
     try {
       const result = await contract.methods
         .listSeed(...params)
@@ -197,7 +197,7 @@ document
     } catch (error) {
       notification(`⚠️ ${error}.`)
     }
-    notification(`🎉 Congrats event successfully added`)
+    notification(`🎉 Listing successful`)
     notificationOff()
     getListedSeeds()
   })
@@ -210,24 +210,14 @@ document.querySelector("#marketplace").addEventListener("click", async (e) => {
       const _id = e.target.id;
       let listedSeed;
 
-      // function to get list of attendess on the smart contract.
+
       try {
           listedSeed = await contract.methods.getListedSeedById(_id).call();
           let myModal = new bootstrap.Modal(document.getElementById('addModal1'), {backdrop: 'static', keyboard: false});
           myModal.show();
 
 
-// stores the timestamp of the event date.
-var eventTimeStamp= parseInt(listedSeed[4])
-
-// converts timestamp to milliseconds.
-var convertToMilliseconds = eventTimeStamp * 1000;
-
-// create an object for it.
-var dateFormat= new Date(convertToMilliseconds);
-
-
-// displays events details on the modal
+// shows seed details on a modal
 document.getElementById("modalHeader").innerHTML = `
 <div class="card">
   <img class="card-img-top"
@@ -270,16 +260,22 @@ document.getElementById("modalHeader").innerHTML = `
   }
 })
 
+
+
+// implements the buy functionalities on the modal
 document.querySelector("#addModal1").addEventListener("click", async (e) => {
     if (e.target.className.includes("buyBtn")) {
-      const index = e.target.id
 
+      // declaring variables for the smartcontract parameters
+      const index = e.target.id
       var _price =  new BigNumber(listedSeeds[index].price)
       var _seedName = listedSeeds[index].seedName
       var _seedImgUrl = listedSeeds[index].seedImgUrl
       var _email = listedSeeds[index].email
 
       notification("⌛ Waiting for payment approval...")
+
+
       try {
         await approve(listedSeeds[index].price)
       } catch (error) {
@@ -304,6 +300,7 @@ document.querySelector("#addModal1").addEventListener("click", async (e) => {
   })
 
 
+// implements the switch tab which toggles the view on the web page
   document.querySelector("#tabs").addEventListener("click", async (e) => {
       if (e.target.className.includes("showpurchased")) {
         document.getElementById("marketplace").classList.add("d-none");
@@ -318,7 +315,7 @@ document.querySelector("#addModal1").addEventListener("click", async (e) => {
         try {
            result = await contract.methods.getPurchasedSeeds().call();
 
-notificationOff()
+           notificationOff()
           if (result.length) {
             document.getElementById(`purchasedProduct`).innerHTML = ``
         result.forEach((item) => {
@@ -330,15 +327,14 @@ var convertToMilliseconds = timestamp * 1000;
 // create an object for it.
 var date = new Date(convertToMilliseconds);
 
-          // var dateFormat = date.getHours() + ":" + date.getMinutes() + ", "+ date.toDateString();
-              console.log(date.getHours())
+//template that shows purchased seeds
                 document.getElementById(`purchasedProduct`).innerHTML +=
                 `
                 <div class="card col-md-12  mb-4">
                 <div class="card-body row">
                 <div class="col-md-4">
                 <img
-                src="${item[2]}" alt="image pic" style="width: 100%; objectFit: cover; height :70%;" />
+                src="${item[2]}" alt="image pic" style="width: 100%; objectFit: cover; height :150px;" />
 
                 <!-- <div class="translate-middle-y position-absolute bottom-25 start-2" >
                 ${identiconTemplate(item[0])}
@@ -386,6 +382,7 @@ var date = new Date(convertToMilliseconds);
 
       }
 
+// toggles the view on the web page
       else if (e.target.className.includes("showProducts")) {
         document.getElementById("marketplace").classList.remove("d-none");
         document.getElementById("purchasedProduct").classList.add("d-none");
