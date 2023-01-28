@@ -86,8 +86,8 @@ contract AgroCelo{
     }
 
 
-// function used to purchase a seed.
-function buySeed(uint _index, string memory _seedName, string memory _seedImgUrl,  uint _price, string memory _email) public payable  {
+// function used to purchase a seed by another farmer.
+function buySeed(uint _index, address _owner, string memory _seedName, string memory _seedImgUrl,  uint _price, string memory _email) public payable  {
         require(listedSeeds[_index].owner != msg.sender, "you are already an owner of this seed");
         require(
           IERC20Token(cUsdTokenAddress).transferFrom(
@@ -97,10 +97,10 @@ function buySeed(uint _index, string memory _seedName, string memory _seedImgUrl
           ),
           "Transfer failed."
         );
-        storePurchasedSeeds(msg.sender, _seedName, _seedImgUrl, _price, _email);
+        storePurchasedSeeds(_owner, _seedName, _seedImgUrl, _price, _email);
     }
 
-// function used to fetch seeds purchased already.
+// function used to fetch seeds purchased already by you.
 function getPurchasedSeeds() public view returns (PurchasedSeedInfo[] memory) {
     return purchasedSeeds[msg.sender];
 }

@@ -23,29 +23,27 @@
     />
 
     <style>
+
       :root {
         --bs-font-sans-serif: "DM Sans", sans-serif;
         --bs-gray: #6c757d;
       }
 
-      /*@media (min-width: 576px) {
-        .card {
-          border: 3px solid rgb(255,218,185);
-          border-radius: 10px;
-        }
 
-        .card-img-top {
-          width: 100%;
-          height: 15vw;
-          object-fit: cover;
-        }
-      }*/
     </style>
 
     <title>AgroCelo</title>
   </head>
 
   <body>
+
+    <!-- Displays notifications on the web page -->
+    <div class="container">
+          <div class="alert alert-warning fixed-top" role="alert">
+            <span id="notification">⌛ Loading please wait...</span>
+          </div>
+    </div>
+
 
    <!-- Navbar starts here -->
   <nav class="navbar bg-success " >
@@ -64,13 +62,13 @@
  <!-- Hero starts here -->
  <div class="row bg-success text-white">
     <div class="col-md-6 p-5">
-      <h4>AgroCelo</h4>
+      <h4>#1 Seed Marketplace</h4>
       <p>
         AgroCelo is a celo blockchain agro project which enables farmers to
-        buy and sell the plant seed
+        buy and sell the plant seed on the celo blockchain.
         <p>
-      <button class="btn btn-primary" data-bs-toggle="modal"
-          data-bs-target="#addModal">Post Seed</button>
+      <button class="btn btn-success shadow" data-bs-toggle="modal"
+          data-bs-target="#addModal">List Seed</button>
     </div>
 
 <div class="col-md-6">
@@ -79,44 +77,53 @@
   </div>
 </div>
  <!--Hero ends here -->
-<div class="container mt-3">
-      <div class="alert alert-warning sticky-top mt-2" role="alert">
-        <span id="notification">⌛ Loading...</span>
-      </div>
-</div>
 
 
 <br />
-<div class="row">
+
+<!-- divs showing buttons used in switching views -->
+<div class="row my-4">
   <div class="col-md-4"></div>
 
   <div class="col-md-4">
  <nav class="nav nav-pills" id="tabs">
-  <a class="nav-link active showProducts" aria-current="page" href="#">Products</a>
-  <a class="nav-link showpurchased" href="#">Purchased Products</a>
+  <a class="nav-link active bg-success  showProducts"
+  id="productTab" aria-current="page" style="cursor : pointer;">Products</a>
+  <a class="nav-link showpurchased" id="purchasedTab" style="cursor : pointer;">Purchased Products</a>
 </nav>
 </div>
-
 <div class="col-md-4"></div>
 </div>
+<!-- end of div -->
+
 <br />
 
 
- <!-- Start of container holding list of events -->
+ <!-- Start of container showing listed seeds -->
         <main id="marketplace" class="row">
-          <p class="text-center mt-5">loading please wait...</p>
+          <div class="d-flex mt-3 justify-content-center">
+  <div class="spinner-border text-success spinner-border-sm" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+    <p class="mx-1">Fetching seeds...</p>
+</div>
         </main>
 
         <main id="purchasedProduct" class="row d-none">
-          <p class="text-center mt-5">loading please wait...</p>
+          <div class="d-flex mt-3 justify-content-center">
+  <div class="spinner-border text-success spinner-border-sm" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+    <p class="mx-1">Fetching data ...</p>
+</div>
         </main>
 
 
       </div>
-<!-- End of container holding list of events -->
+<!-- End of container -->
 
 
-<!-- start of modal that view an event -->
+<!-- start of modal that shows seed details -->
 <div
       class="modal fade"
       id="addModal1"
@@ -128,7 +135,7 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="newProductModalLabel">Event Details </h5>
+            <h5 class="modal-title" id="newProductModalLabel">Details </h5>
 
             <button
               type="button"
@@ -142,11 +149,10 @@
           </div>
           </div>
           </div>
+<!-- end of modal -->
 
-<!-- end of modal that view an event -->
 
-
-<!-- start of modal to add a new event -->
+<!-- start of modal to list a seed -->
     <div
       class="modal fade"
       id="addModal"
@@ -211,7 +217,17 @@
                     type="text"
                     id="newPrice"
                     class="form-control mb-2"
-                    placeholder="Enter price"
+                    placeholder="price"
+                  />
+                </div>
+
+
+                <div class="col">
+                  <input
+                    type="email"
+                    id="email"
+                    class="form-control mb-2"
+                    placeholder="email address"
                   />
                 </div>
 
@@ -228,17 +244,17 @@
             </button>
             <button
               type="button"
-              class="btn btn-dark"
+              class="btn btn-success"
               data-bs-dismiss="modal"
-              id="postEventBtn"
+              id="listSeedBtn"
             >
-              Add Event
+              List Seed
             </button>
           </div>
         </div>
       </div>
     </div>
-<!-- end of modal to add a new event -->
+<!-- end of modal -->
 
     <script
     src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"

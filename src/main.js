@@ -5,12 +5,12 @@ import marketplaceAbi from "../contract/marketplace.abi.json"
 import erc20Abi from "../contract/erc20.abi.json"
 
 const ERC20_DECIMALS = 18
-const MPContractAddress = "0x3ea2b3DE068E9849e77671F49054BE214933f66F"
+const MPContractAddress = "0x93C2eFb0Bc6d5f09D37af265B9B78c95e7dC69E4" // deployed smart contract address
 const cUSDContractAddress = "0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1" //Erc20 contract address
 
 let kit //contractkit
 let contract // contract variable
-let listedSeeds = [] // array of event lists
+let listedSeeds = [] // array of listed seeds
 
 
 //Connects the wallet gets the account and initializes the contract
@@ -100,12 +100,10 @@ function renderProductTemplate() {
   document.getElementById("marketplace").innerHTML = ""
   if (listedSeeds) {
   listedSeeds.forEach((seed) => {
-    if (seed.owner != "0x0000000000000000000000000000000000000000") {
     const newDiv = document.createElement("div")
     newDiv.className = "col-md-3"
     newDiv.innerHTML = productTemplate(seed)
     document.getElementById("marketplace").appendChild(newDiv)
-  }
   })}
 }
 
@@ -179,6 +177,7 @@ document
   .querySelector("#listSeedBtn")
   .addEventListener("click", async (e) => {
 
+// collecting form parameters
     const params = [
       document.getElementById("seedName").value,
       document.getElementById("seedImgUrl").value,
@@ -272,6 +271,7 @@ document.querySelector("#addModal1").addEventListener("click", async (e) => {
       var _seedName = listedSeeds[index].seedName
       var _seedImgUrl = listedSeeds[index].seedImgUrl
       var _email = listedSeeds[index].email
+      var _owner = listedSeeds[index].owner
 
       notification("⌛ Waiting for payment approval...")
 
@@ -285,7 +285,7 @@ document.querySelector("#addModal1").addEventListener("click", async (e) => {
       notification(`⌛ Awaiting payment for "${listedSeeds[index].seedName}"...`)
       try {
         const result = await contract.methods
-          .buySeed(index, _seedName, _seedImgUrl, _price, _email)
+          .buySeed(index, _owner, _seedName, _seedImgUrl, _price, _email)
           .send({ from: kit.defaultAccount })
         notification(`🎉 You successfully bought "${listedSeeds[index].seedName}".`)
         getListedSeeds()
@@ -320,7 +320,7 @@ document.querySelector("#addModal1").addEventListener("click", async (e) => {
             document.getElementById(`purchasedProduct`).innerHTML = ``
         result.forEach((item) => {
           var timestamp= parseInt(item[3])
-
+console.log(result);
 // converts timestamp to milliseconds.
 var convertToMilliseconds = timestamp * 1000;
 
@@ -336,9 +336,9 @@ var date = new Date(convertToMilliseconds);
                 <img
                 src="${item[2]}" alt="image pic" style="width: 100%; objectFit: cover; height :150px;" />
 
-                <!-- <div class="translate-middle-y position-absolute bottom-25 start-2" >
+                <div class="translate-middle-y position-absolute bottom-25 start-2" >
                 ${identiconTemplate(item[0])}
-                </div> -->
+                </div>
                     </div>
 
                     <div class="col-md-8">
