@@ -303,6 +303,8 @@ document.querySelector("#addModal1").addEventListener("click", async (e) => {
       if (e.target.className.includes("showpurchased")) {
         document.getElementById("marketplace").classList.add("d-none");
         document.getElementById("purchasedProduct").classList.remove("d-none");
+        document.getElementById("productTab").classList.remove("active", "bg-success");
+        document.getElementById("purchasedTab").classList.add("active", "bg-success");
 
         var resultx;
 
@@ -314,7 +316,18 @@ document.querySelector("#addModal1").addEventListener("click", async (e) => {
 console.log(resultx)
 
           if (resultx.length) {
+            document.getElementById(`purchasedProduct`).innerHTML = ``
         resultx.forEach((item) => {
+          var timestamp= parseInt(item[3])
+
+// converts timestamp to milliseconds.
+var convertToMilliseconds = timestamp * 1000;
+
+// create an object for it.
+var date = new Date(convertToMilliseconds);
+
+          // var dateFormat = date.getHours() + ":" + date.getMinutes() + ", "+ date.toDateString();
+              console.log(date.getHours())
                 document.getElementById(`purchasedProduct`).innerHTML +=
                 `
                 <div class="card col-md-12  mb-4">
@@ -341,12 +354,12 @@ console.log(resultx)
 
                     <p class="card-text mt-2 d-flex justify-content-between" style="font-size : 12px;">
                       <span style="display : block;" class="text-uppercase fw-bold">Price: </span>
-                      <span >${item[4]}</span>
+                      <span >${new BigNumber(item[4]).shiftedBy(-ERC20_DECIMALS).toFixed(2)} cUSD</span>
                     </p>
 
                     <p class="card-text mt-2 d-flex justify-content-between" style="font-size : 12px;">
                       <span style="display : block;" class="text-uppercase fw-bold">Date Purchased: </span>
-                      <span >${item[4]}</span>
+                      <span >${date.getHours() + ":" + date.getMinutes() + ", "+ date.toDateString()}</span>
                     </p>
                       </div>
                     </div>
@@ -354,14 +367,15 @@ console.log(resultx)
                   ;
               })
       } else{
-        document.getElementById(`purchasedProduct`).innerHTML += `<p class="text-center">no attendee yet...</p>`;
+        document.getElementById(`purchasedProduct`).innerHTML = `<p class="text-center">
+        you haven't purchased any seed yet</p>`;
       };
 
         } catch (error) {
           notification(`⚠️ ${error}.`)
         }
         // notificationOff()
-        console.log(resultx[0][1])
+        // console.log(resultx[0][1])
         getListedSeeds()
         // document.getElementById("marketplace").innerHTML += `<p>Hello</p>`
       }
@@ -369,5 +383,7 @@ console.log(resultx)
       else if (e.target.className.includes("showProducts")) {
         document.getElementById("marketplace").classList.remove("d-none");
         document.getElementById("purchasedProduct").classList.add("d-none");
+        document.getElementById("productTab").classList.add("active", "bg-success");
+        document.getElementById("purchasedTab").classList.remove("active", "bg-success");
       }
 })

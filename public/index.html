@@ -82,8 +82,8 @@
 
   <div class="col-md-4">
  <nav class="nav nav-pills" id="tabs">
-  <a class="nav-link active showProducts" aria-current="page" href="#">Products</a>
-  <a class="nav-link showpurchased" href="#">Purchased Products</a>
+  <a class="nav-link active bg-success  showProducts" id="productTab" aria-current="page">Products</a>
+  <a class="nav-link showpurchased" id="purchasedTab" >Purchased Products</a>
 </nav>
 </div>
 
@@ -94,11 +94,21 @@
 
  <!-- Start of container holding list of events -->
         <main id="marketplace" class="row">
-          <p class="text-center mt-5">loading please wait...</p>
+          <div class="d-flex mt-3 justify-content-center">
+  <div class="spinner-border text-success spinner-border-sm" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+    <p class="mx-1">Fetching seeds...</p>
+</div>
         </main>
 
         <main id="purchasedProduct" class="row d-none">
-          <p class="mt-5">loading please wait...</p>
+          <div class="d-flex mt-3 justify-content-center">
+  <div class="spinner-border text-success spinner-border-sm" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+    <p class="mx-1">Fetching data ...</p>
+</div>
         </main>
 
 
