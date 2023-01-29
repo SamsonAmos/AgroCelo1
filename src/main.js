@@ -11,6 +11,7 @@ const cUSDContractAddress = "0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1" //Erc20
 let kit //contractkit
 let contract // contract variable
 let listedSeeds = [] // array of listed seeds
+//changes here
 
 
 //Connects the wallet gets the account and initializes the contract
