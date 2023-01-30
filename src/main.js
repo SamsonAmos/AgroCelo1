@@ -5,12 +5,13 @@ import marketplaceAbi from "../contract/marketplace.abi.json"
 import erc20Abi from "../contract/erc20.abi.json"
 
 const ERC20_DECIMALS = 18
-const MPContractAddress = "0x93C2eFb0Bc6d5f09D37af265B9B78c95e7dC69E4" // deployed smart contract address
+const MPContractAddress = "0x6ce262F1f89c0987DfBFB40d32c84f83259A1755" // deployed smart contract address
 const cUSDContractAddress = "0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1" //Erc20 contract address
 
 let kit //contractkit
 let contract // contract variable
 let listedSeeds = [] // array of listed seeds
+//changes here
 
 
 //Connects the wallet gets the account and initializes the contract
