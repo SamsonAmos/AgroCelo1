@@ -1,4 +1,7 @@
-// SPDX-License-Identifier: MIT
+
+// SPDX-License-Identifier: GPL-3.0
+
+
 
 
 pragma solidity ^0.8.3;
@@ -41,20 +44,29 @@ contract AgroCelo{
         string email;
     }
 
+    // Event to log the seed listing
+    event SeedListed(string seedName, uint price, address owner);
+
+    // Event to log the seed purchase
+    event SeedPurchased(string seedName, uint price, address buyer, address seller);
+
     //map used to store listed seeds.
     mapping (uint => SeedInformation) internal listedSeeds;
 
     //map used to store seeds purchased.
     mapping(address => PurchasedSeedInfo[]) internal purchasedSeeds;
 
+    mapping (string => uint) public seedNames;
 
     // Function used to list a seed.
    function listSeed(string memory _seedName, string memory _seedImgUrl,
     string memory _seedDetails, string memory  _seedLocation, uint _price, string memory _email) public {
+        
+        require(seedNames[_seedName] == 0, "Seed with this name already exists");
         // Validate that seedName is not empty
-        require(Strings.bytes(_seedName).length > 0, "seedName cannot be empty");
+        require(bytes(_seedName).length > 0, "seedName cannot be empty");
         // Validate that seedImgUrl is not empty
-        require(Strings.bytes(_seedImgUrl).length > 0, "seedImgUrl cannot be empty");
+        require(bytes(_seedImgUrl).length > 0, "seedImgUrl cannot be empty");
 
         listedSeeds[listedSeedLength] = SeedInformation({
         owner : payable(msg.sender),
@@ -66,6 +78,9 @@ contract AgroCelo{
         email : _email
       });
      listedSeedLength++;
+
+     emit SeedListed(_seedName, _price, msg.sender);
+
 }
 
 
@@ -108,6 +123,9 @@ function buySeed(uint _index, address _owner, string memory _seedName, string me
     );
     // Store the purchased seed information for the caller
     storePurchasedSeeds(_owner, _seedName, _seedImgUrl, _price, _email);
+
+    emit SeedPurchased(listedSeeds[_index].seedName, listedSeeds[_index].price, msg.sender, listedSeeds[_index].owner);
+
 }
 
 // function used to fetch seeds purchased already by you.
