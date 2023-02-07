@@ -68,6 +68,17 @@ contract AgroCelo{
         // Validate that seedImgUrl is not empty
         require(bytes(_seedImgUrl).length > 0, "seedImgUrl cannot be empty");
 
+        require(bytes(_seedName).length <= 32, "Seed name must be at most 32 bytes");
+        
+        require(bytes(_seedImgUrl).length <= 64, "Seed image URL must be at most 64 bytes");
+ 
+        require(bytes(_seedDetails).length <= 256, "Seed details must be at most 256 bytes");
+ 
+        require(bytes(_seedLocation).length <= 64, "Seed location must be at most 64 bytes");
+ 
+        require(bytes(_email).length <= 32, "Email must be at most 32 bytes");
+
+
         listedSeeds[listedSeedLength] = SeedInformation({
         owner : payable(msg.sender),
         seedName: _seedName,
