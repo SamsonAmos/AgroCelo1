@@ -1,4 +1,6 @@
 // SPDX-License-Identifier: MIT
+
+
 pragma solidity ^0.8.3;
 
 interface IERC20Token {
@@ -47,8 +49,13 @@ contract AgroCelo{
 
 
     // Function used to list a seed.
-    function listSeed(string memory _seedName, string memory _seedImgUrl,
+   function listSeed(string memory _seedName, string memory _seedImgUrl,
     string memory _seedDetails, string memory  _seedLocation, uint _price, string memory _email) public {
+        // Validate that seedName is not empty
+        require(Strings.bytes(_seedName).length > 0, "seedName cannot be empty");
+        // Validate that seedImgUrl is not empty
+        require(Strings.bytes(_seedImgUrl).length > 0, "seedImgUrl cannot be empty");
+
         listedSeeds[listedSeedLength] = SeedInformation({
         owner : payable(msg.sender),
         seedName: _seedName,
@@ -87,18 +94,21 @@ contract AgroCelo{
 
 
 // function used to purchase a seed by another farmer.
-function buySeed(uint _index, address _owner, string memory _seedName, string memory _seedImgUrl,  uint _price, string memory _email) public payable  {
-        require(listedSeeds[_index].owner != msg.sender, "you are already an owner of this seed");
-        require(
-          IERC20Token(cUsdTokenAddress).transferFrom(
-            msg.sender,
-            listedSeeds[_index].owner,
-            listedSeeds[_index].price
-          ),
-          "Transfer failed."
-        );
-        storePurchasedSeeds(_owner, _seedName, _seedImgUrl, _price, _email);
-    }
+function buySeed(uint _index, address _owner, string memory _seedName, string memory _seedImgUrl, uint _price, string memory _email) public payable {
+    // Validate that the seed exists
+    require(_index < listedSeedLength, "Seed not found");
+    // Validate that the caller is not the owner of the seed
+    require(listedSeeds[_index].owner != msg.sender, "You are already the owner of this seed");
+    // Validate that the caller has enough balance in cUSDT token
+    require(IERC20Token(cUsdTokenAddress).balanceOf(msg.sender) >= listedSeeds[_index].price, "Insufficient balance in cUSDT token");
+    // Transfer the cUSDT token from the caller to the seed owner
+    require(
+        IERC20Token(cUsdTokenAddress).transfer(listedSeeds[_index].owner, listedSeeds[_index].price),
+        "Transfer of cUSDT token failed"
+    );
+    // Store the purchased seed information for the caller
+    storePurchasedSeeds(_owner, _seedName, _seedImgUrl, _price, _email);
+}
 
 // function used to fetch seeds purchased already by you.
 function getPurchasedSeeds() public view returns (PurchasedSeedInfo[] memory) {
