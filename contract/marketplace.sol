@@ -18,10 +18,10 @@ contract AgroCelo{
    // Declaring variables.
     uint internal listedSeedLength = 0;
     address internal cUsdTokenAddress = 0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1;
-
+    
     // Ceating a struct to store event details.
     struct SeedInformation {
-        address  owner;
+        address  payable owner;
         string seedName;
         string seedImgUrl;
         string seedDetails;
@@ -49,11 +49,18 @@ contract AgroCelo{
     // Function used to list a seed.
     function listSeed(string memory _seedName, string memory _seedImgUrl,
     string memory _seedDetails, string memory  _seedLocation, uint _price, string memory _email) public {
+        
+        require(bytes(_seedName).length > 0, "seedName cannot be empty");
+        require(bytes(_seedImgUrl).length > 0, "seedImgUrl cannot be empty");
+        require(bytes(_seedDetails).length > 0, "seedDetails cannot be empty");
+        require(bytes(_seedLocation).length > 0, "seedLocation cannot be empty");
+        require(bytes(_email).length > 0, "email cannot be empty");
+        
         listedSeeds[listedSeedLength] = SeedInformation({
         owner : payable(msg.sender),
         seedName: _seedName,
-        seedImgUrl: _seedImgUrl,
-        seedDetails : _seedDetails,
+        seedImgUrl: _seedImgUrl, 
+        seedDetails : _seedDetails, 
         seedLocation: _seedLocation,
         price : _price,
         email : _email
@@ -69,14 +76,14 @@ contract AgroCelo{
         string memory,
         string memory,
         string memory,
-        uint price,
+        uint,
         string memory
-
+        
     ) {
-
+    
         return (
             listedSeeds[_index].owner,
-            listedSeeds[_index].seedName,
+            listedSeeds[_index].seedName, 
             listedSeeds[_index].seedImgUrl,
             listedSeeds[_index].seedDetails,
             listedSeeds[_index].seedLocation,
@@ -88,7 +95,9 @@ contract AgroCelo{
 
 // function used to purchase a seed by another farmer.
 function buySeed(uint _index, address _owner, string memory _seedName, string memory _seedImgUrl,  uint _price, string memory _email) public payable  {
+        require(_price > 0, "Price should be greater than 0");
         require(listedSeeds[_index].owner != msg.sender, "you are already an owner of this seed");
+        require(IERC20Token(cUsdTokenAddress).balanceOf(msg.sender) >= listedSeeds[_index].price, "Insufficient balance in cUSDT token");
         require(
           IERC20Token(cUsdTokenAddress).transferFrom(
             msg.sender,
@@ -108,8 +117,8 @@ function getPurchasedSeeds() public view returns (PurchasedSeedInfo[] memory) {
 
 // function used to store purchase seed by a particular owner.
 function storePurchasedSeeds(address _owner,
- string memory _seedName, string memory _seedImgUrl, uint _price, string memory _email) public {
-    purchasedSeeds[msg.sender].push(PurchasedSeedInfo({purchasedFrom : _owner,
+ string memory _seedName, string memory _seedImgUrl, uint _price, string memory _email) internal {
+    purchasedSeeds[msg.sender].push(PurchasedSeedInfo({purchasedFrom : _owner, 
     seedName : _seedName, price : _price, email : _email, seedImgUrl : _seedImgUrl, timeStamp : block.timestamp }));
 }
 
@@ -118,6 +127,6 @@ function storePurchasedSeeds(address _owner,
 // function used to get length of lised seeds.
     function getListedSeedLength() public view returns (uint) {
         return (listedSeedLength);
-    }
+    }    
 
 }
