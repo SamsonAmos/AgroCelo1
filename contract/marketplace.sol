@@ -125,6 +125,8 @@ function buySeed(uint _index, address _owner, string memory _seedName, string me
     require(_index < listedSeedLength, "Seed not found");
     // Validate that the caller is not the owner of the seed
     require(listedSeeds[_index].owner != msg.sender, "You are already the owner of this seed");
+    // Validate that the price of the seed matches the input price
+    require(listedSeeds[_index].price == _price, "Incorrect seed price");
     // Validate that the caller has enough balance in cUSDT token
     require(IERC20Token(cUsdTokenAddress).balanceOf(msg.sender) >= listedSeeds[_index].price, "Insufficient balance in cUSDT token");
     // Transfer the cUSDT token from the caller to the seed owner
